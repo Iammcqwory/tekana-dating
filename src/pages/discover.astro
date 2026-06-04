@@ -1,0 +1,16 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Navbar } from "../components/site/navbar";
+import { Footer } from "../components/site/footer";
+import { DiscoverPage } from "../components/discover/discover-page";
+---
+
+<Layout title="Discover | Tekana" description="Find compatible partners on Tekana.">
+  <div class="flex min-h-screen flex-col relative">
+    <Navbar client:load />
+    <main class="flex-1">
+      <DiscoverPage client:load />
+    </main>
+    <Footer client:load />
+  </div>
+</Layout>

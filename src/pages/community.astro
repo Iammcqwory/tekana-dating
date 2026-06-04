@@ -1,0 +1,220 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Navbar } from "../components/site/navbar";
+import { Footer } from "../components/site/footer";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Users, MessageSquare, Heart, Star, Plus, Search } from "lucide-react";
+import { Input } from "../components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+
+const GROUPS = [
+    {
+        id: "1",
+        name: "Nairobi Hikers",
+        members: 1240,
+        description: "Weekly hiking trips around Nairobi and beyond.",
+        tags: ["Fitness", "Outdoor"],
+    },
+    {
+        id: "2",
+        name: "Afrobeats Lovers",
+        members: 3500,
+        description: "Discussing the latest hits and upcoming concerts.",
+        tags: ["Music", "Culture"],
+    },
+    {
+        id: "3",
+        name: "Startup Founders",
+        members: 890,
+        description: "Connect with other entrepreneurs in the ecosystem.",
+        tags: ["Business", "Networking"],
+    },
+    {
+        id: "4",
+        name: "Gourmet Cooks",
+        members: 1100,
+        description: "Sharing traditional and modern African recipes.",
+        tags: ["Food", "Culture"],
+    },
+];
+
+const STORIES = [
+    {
+        id: "s1",
+        couple: "Sarah & David",
+        story: "We matched during the 2022 Coffee Connections event and haven't looked back since!",
+        location: "Nairobi",
+        image: "",
+    },
+    {
+        id: "s2",
+        couple: "Grace & Michael",
+        story: "Found each other through the 'Art Lovers' group. Our first date was at the Nairobi Gallery.",
+        location: "Mombasa",
+        image: "",
+    },
+];
+---
+
+<Layout title="Community Hub | Tekana" description="Connect with like-minded people through interest groups and shared stories.">
+  <div class="flex min-h-screen flex-col relative">
+    <Navbar client:load />
+    <main class="flex-1">
+      <div class="container mx-auto px-4 py-8">
+        <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div class="space-y-2">
+            <h1 class="text-4xl font-bold tracking-tight">Community Hub</h1>
+            <p class="text-xl text-muted-foreground">
+              Connect with like-minded people through interest groups and shared stories.
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <div class="relative w-full md:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input className="pl-9" placeholder="Search groups..." client:load />
+            </div>
+            <Button className="bg-rose-500 hover:bg-rose-600">
+              <Plus className="mr-2 h-4 w-4" /> Create Group
+            </Button>
+          </div>
+        </div>
+
+        <div class="grid gap-12 lg:grid-cols-3">
+          {/* Main Groups Section */}
+          <div class="lg:col-span-2 space-y-8">
+            <section>
+              <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <Users className="h-6 w-6 text-rose-500" />
+                Featured Groups
+              </h2>
+              <div class="grid gap-6 sm:grid-cols-2">
+                {GROUPS.map((group) => (
+                  <Card className="transition-all hover:shadow-md border-border/60">
+                    <CardHeader className="pb-2">
+                      <div class="flex justify-between items-start">
+                        <CardTitle className="text-xl">{group.name}</CardTitle>
+                        <Badge variant="secondary" className="bg-rose-50 text-rose-600 border-none">
+                          {group.members.toLocaleString()} members
+                        </Badge>
+                      </div>
+                      <CardDescription>{group.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div class="flex gap-2">
+                        {group.tags.map(tag => (
+                          <Badge variant="outline" className="text-[10px] uppercase tracking-wider">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                      <Button variant="outline" className="w-full border-rose-200 text-rose-500 hover:bg-rose-50">
+                        Join Group
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            </section>
+
+            <section>
+              <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <MessageSquare className="h-6 w-6 text-rose-500" />
+                Latest Discussions
+              </h2>
+              <Card>
+                <CardContent className="p-0">
+                  {[1, 2, 3].map((_, i) => (
+                    <div className="flex gap-4 p-6 border-b last:border-0 hover:bg-muted/30 transition-colors">
+                      <div class="h-10 w-10 rounded-full bg-muted flex items-center justify-center font-semibold text-muted-foreground shrink-0">
+                        U{i}
+                      </div>
+                      <div class="space-y-1">
+                        <h4 class="font-semibold leading-none">Best hiking spots in Limuru?</h4>
+                        <p class="text-sm text-muted-foreground">
+                          Thinking of organizing a group hike this Saturday. Any recommendations?
+                        </p>
+                        <div class="flex items-center gap-4 text-xs text-muted-foreground pt-2">
+                          <span class="flex items-center gap-1"><Users className="h-3 w-3" /> Nairobi Hikers</span>
+                          <span>12 replies</span>
+                          <span>2 hours ago</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </section>
+          </div>
+
+          {/* Sidebar - Success Stories */}
+          <div class="space-y-8">
+            <section>
+              <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <Heart className="h-6 w-6 text-rose-500" />
+                Success Stories
+              </h2>
+              <div class="space-y-6">
+                {STORIES.map((story) => (
+                  <Card className="overflow-hidden border-rose-100 bg-rose-50/30">
+                    <div class="aspect-video bg-muted relative">
+                      <div class="absolute inset-0 flex items-center justify-center text-muted-foreground/50">
+                        <Heart className="h-8 w-8 fill-current" />
+                      </div>
+                    </div>
+                    <CardHeader className="p-4">
+                      <CardTitle className="text-lg">{story.couple}</CardTitle>
+                      <CardDescription className="text-rose-600 font-medium">{story.location}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0">
+                      <p class="text-sm text-muted-foreground italic">
+                        "{story.story}"
+                      </p>
+                    </CardContent>
+                    <CardFooter className="p-4 pt-0">
+                      <Button variant="ghost" size="sm" className="text-rose-500 hover:text-rose-600 p-0">
+                        Read full story 
+                        <svg
+                          class="h-4 w-4 ml-1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="m9 18 6-6-6-6" />
+                        </svg>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+              <Button className="w-full mt-6 bg-gradient-to-r from-rose-500 to-rose-600">
+                Share Your Story
+              </Button>
+            </section>
+
+            <section class="bg-rose-500 rounded-xl p-6 text-white text-center">
+              <Star className="h-8 w-8 mx-auto mb-4 fill-white text-white" />
+              <h3 class="text-xl font-bold mb-2">Community Guidelines</h3>
+              <p class="text-sm text-white/80 mb-4">
+                We're committed to keeping Tekana a safe and respectful place for everyone.
+              </p>
+              <Button className="bg-white text-rose-500 hover:bg-white/90 w-full">
+                View Guidelines
+              </Button>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+    <Footer client:load />
+  </div>
+</Layout>

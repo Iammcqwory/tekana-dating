@@ -1,0 +1,16 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { Navbar } from "../../components/site/navbar";
+import { Footer } from "../../components/site/footer";
+import { MessagesPage } from "../../components/messages/messages-page";
+---
+
+<Layout title="Messages | Tekana" description="View and respond to your messages on Tekana.">
+  <div class="flex min-h-screen flex-col relative">
+    <Navbar client:load />
+    <main class="flex-1">
+      <MessagesPage client:load />
+    </main>
+    <Footer client:load />
+  </div>
+</Layout>

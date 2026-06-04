@@ -1,0 +1,30 @@
+---
+import "../styles/globals.css";
+import { ThemeProvider } from "../components/providers/theme-provider";
+import { Toaster } from "sonner";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = "Tekana - Connect Authentically", description = "Tekana is a dating platform designed to connect individuals through meaningful interactions and compatibility matching." } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body class="min-h-screen bg-background font-sans antialiased">
+    <ThemeProvider client:load>
+      <slot />
+      <Toaster client:load position="top-right" />
+    </ThemeProvider>
+  </body>
+</html>

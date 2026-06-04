@@ -1,0 +1,20 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { Navbar } from "../../components/site/navbar";
+import { Footer } from "../../components/site/footer";
+import { RegisterForm } from "../../components/auth/register-form";
+---
+
+<Layout title="Register | Tekana" description="Create a Tekana account to connect with compatible partners.">
+  <div class="flex min-h-screen flex-col relative">
+    <Navbar client:load />
+    <main class="flex-1">
+      <div class="container mx-auto flex min-h-[calc(100vh-16rem)] items-center justify-center py-12">
+        <div class="w-full max-w-md">
+          <RegisterForm client:load />
+        </div>
+      </div>
+    </main>
+    <Footer client:load />
+  </div>
+</Layout>

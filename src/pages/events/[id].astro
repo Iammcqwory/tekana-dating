@@ -1,0 +1,28 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { Navbar } from "../../components/site/navbar";
+import { Footer } from "../../components/site/footer";
+import { EventDetailsPage } from "../../components/events/event-details-page";
+
+export function getStaticPaths() {
+  return [
+    { params: { id: '1' } },
+    { params: { id: '2' } },
+    { params: { id: '3' } },
+    { params: { id: '4' } },
+    { params: { id: '5' } },
+    { params: { id: '6' } },
+    { params: { id: '7' } },
+  ];
+}
+---
+
+<Layout title="Event Details | Tekana">
+  <div class="flex min-h-screen flex-col relative">
+    <Navbar client:load />
+    <main class="flex-1">
+      <EventDetailsPage client:load />
+    </main>
+    <Footer client:load />
+  </div>
+</Layout>

@@ -1,0 +1,16 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Navbar } from "../components/site/navbar";
+import { Footer } from "../components/site/footer";
+import { ProfilePage } from "../components/profile/profile-page";
+---
+
+<Layout title="My Profile | Tekana" description="View and manage your Tekana profile.">
+  <div class="flex min-h-screen flex-col relative">
+    <Navbar client:load />
+    <main class="flex-1">
+      <ProfilePage client:load />
+    </main>
+    <Footer client:load />
+  </div>
+</Layout>

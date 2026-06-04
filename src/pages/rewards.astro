@@ -1,0 +1,247 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Navbar } from "../components/site/navbar";
+import { Footer } from "../components/site/footer";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import {
+    Trophy,
+    Flame,
+    Star,
+    Target,
+    Gift,
+    Zap,
+    CheckCircle2,
+    Lock,
+    Sparkles,
+    Globe
+} from "lucide-react";
+
+const ACHIEVEMENTS = [
+    {
+        id: 1,
+        title: "Cultural Explorer",
+        description: "Match with 5 people from different origins.",
+        points: 150,
+        progress: 80,
+        completed: false,
+        iconType: "globe"
+    },
+    {
+        id: 2,
+        title: "Respectful Storyteller",
+        description: "Share your success story in the community hub.",
+        points: 300,
+        progress: 100,
+        completed: true,
+        iconType: "check"
+    },
+    {
+        id: 3,
+        title: "AI Apprentice",
+        description: "Use the Tekana Wingman for 3 different icebreakers.",
+        points: 100,
+        progress: 66,
+        completed: false,
+        iconType: "sparkles"
+    }
+];
+
+const DAILY_TASKS = [
+    { id: 1, task: "Complete your Cultural Bio", reward: 20, done: true },
+    { id: 2, task: "Send a virtual gift", reward: 50, done: false },
+    { id: 3, task: "Explore the Diaspora Bridge", reward: 15, done: false }
+];
+---
+
+<Layout title="Zenith Rewards | Tekana" description="Level up your dating experience and earn premium perks.">
+  <div class="flex min-h-screen flex-col relative">
+    <Navbar client:load />
+    <main class="flex-1 bg-gradient-to-b from-rose-50/30 to-white dark:from-rose-950/10 dark:to-background">
+      <div class="container mx-auto px-4 py-8">
+        {/* Header Section */}
+        <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <h1 class="text-4xl font-extrabold tracking-tight lg:text-5xl">Zenith Rewards</h1>
+            <p class="mt-2 text-lg text-muted-foreground">Level up your dating experience and earn premium perks.</p>
+          </div>
+          <div class="flex gap-4">
+            <Card className="bg-gradient-to-br from-rose-500 to-rose-600 text-white border-none shadow-xl">
+              <CardContent className="flex items-center gap-4 py-4 pr-8">
+                <div class="rounded-full bg-white/20 p-2">
+                  <Zap className="h-6 w-6 fill-white" />
+                </div>
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-wider opacity-80">Zenith Points</p>
+                  <p class="text-2xl font-black">1,250</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-gradient-to-br from-amber-400 to-orange-500 text-white border-none shadow-xl">
+              <CardContent className="flex items-center gap-4 py-4 pr-8">
+                <div class="rounded-full bg-white/20 p-2">
+                  <Flame className="h-6 w-6 fill-white" />
+                </div>
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-wider opacity-80">Daily Streak</p>
+                  <p class="text-2xl font-black">7 Days</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        <div class="grid gap-8 lg:grid-cols-3">
+          {/* Main column: Achievements */}
+          <div class="lg:col-span-2 space-y-6">
+            <div class="flex items-center justify-between">
+              <h2 class="text-2xl font-bold flex items-center gap-2">
+                <Trophy className="h-6 w-6 text-amber-500" /> Active Achievements
+              </h2>
+              <Button variant="link" className="text-rose-500 font-semibold p-0">View All</Button>
+            </div>
+
+            <div class="grid gap-4">
+              {ACHIEVEMENTS.map((ach) => (
+                <Card className={`group overflow-hidden transition-all hover:shadow-md ${ach.completed ? 'bg-green-50/30 dark:bg-green-950/10 border-green-100' : ''}`}>
+                  <CardContent className="p-6">
+                    <div class="flex items-start gap-4">
+                      <div class={`p-3 rounded-xl ${ach.completed ? 'bg-green-100 dark:bg-green-900/40' : 'bg-muted'} transition-colors`}>
+                        {ach.iconType === "globe" && <Globe className="h-5 w-5 text-blue-500" />}
+                        {ach.iconType === "check" && <CheckCircle2 className="h-5 w-5 text-green-500" />}
+                        {ach.iconType === "sparkles" && <Sparkles className="h-5 w-5 text-rose-500" />}
+                      </div>
+                      <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                          <h3 class="font-bold text-lg">{ach.title}</h3>
+                          <Badge variant={ach.completed ? "default" : "secondary"}>
+                            {ach.completed ? "Completed" : `+${ach.points} ZP`}
+                          </Badge>
+                        </div>
+                        <p class="text-sm text-muted-foreground mb-4">{ach.description}</p>
+                        <div class="w-full bg-muted rounded-full h-2 overflow-hidden mb-1">
+                          <div
+                            class={`h-full rounded-full transition-all duration-1000 ${ach.completed ? 'bg-green-500' : 'bg-rose-500'}`}
+                            style={{ width: `${ach.progress}%` }}
+                          />
+                        </div>
+                        <p class="text-[10px] font-bold text-right uppercase tracking-wider text-muted-foreground">
+                          {ach.progress}% Progress
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Reward Store Preview */}
+            <div class="mt-12 space-y-6">
+              <h2 class="text-2xl font-bold flex items-center gap-2">
+                <Gift className="h-6 w-6 text-rose-500" /> Unlock Premium Perks
+              </h2>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <Card className="relative overflow-hidden group">
+                  <CardContent className="p-6">
+                    <div class="absolute top-2 right-2 opacity-10 transition-opacity group-hover:opacity-20">
+                      <Star className="h-24 w-24" />
+                    </div>
+                    <h4 class="font-bold text-lg mb-1">Boost Recognition</h4>
+                    <p class="text-sm text-muted-foreground mb-4">Increase your visibility by 5x for 24 hours.</p>
+                    <Button className="w-full bg-black hover:bg-zinc-800 text-white dark:bg-white dark:text-black dark:hover:bg-zinc-200">
+                      Unlock for 500 ZP
+                    </Button>
+                  </CardContent>
+                </Card>
+                <Card className="relative overflow-hidden group">
+                  <CardContent className="p-6">
+                    <div class="absolute top-2 right-2 opacity-10 transition-opacity group-hover:opacity-20">
+                      <Lock className="h-24 w-24" />
+                    </div>
+                    <h4 class="font-bold text-lg mb-1">Exclusive Themes</h4>
+                    <p class="text-sm text-muted-foreground mb-4">Golden border and premium profile layouts.</p>
+                    <Button variant="outline" className="w-full" disabled>
+                      Unlock at level 10
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar: Daily Tasks & Stats */}
+          <div class="space-y-6">
+            <Card className="border-rose-100 bg-rose-50/30 dark:bg-rose-950/10">
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <Target className="h-5 w-5 text-rose-500" /> Daily Quests
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {DAILY_TASKS.map((task) => (
+                  <div class="flex items-center justify-between gap-4 p-2 rounded-lg hover:bg-white/50 transition-colors">
+                    <div class="flex items-center gap-3">
+                      <div class={`mt-0.5 h-4 w-4 rounded-full border-2 border-rose-500 flex items-center justify-center ${task.done ? 'bg-rose-500' : ''}`}>
+                        {task.done && <CheckCircle2 className="h-3 w-3 text-white" />}
+                      </div>
+                      <span class={`text-sm font-medium ${task.done ? 'line-through opacity-50' : ''}`}>{task.task}</span>
+                    </div>
+                    <Badge variant="outline" className="text-rose-600 font-bold border-rose-200 bg-white">+{task.reward}</Badge>
+                  </div>
+                ))}
+                <Button className="w-full mt-4 bg-rose-500 hover:bg-rose-600 text-white">
+                  Submit All Tasks
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Stats & Level</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div class="space-y-2">
+                  <div class="flex justify-between text-sm">
+                    <span class="font-bold">Level 12</span>
+                    <span class="text-muted-foreground">3,400 / 5,000 XP</span>
+                  </div>
+                  <div class="w-full bg-muted rounded-full h-3">
+                    <div class="bg-gradient-to-r from-rose-500 to-rose-600 h-full rounded-full" style={{ width: '68%' }} />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="p-3 rounded-lg bg-muted/50 text-center">
+                    <p class="text-xs text-muted-foreground font-bold uppercase mb-1">Rank</p>
+                    <p class="text-xl font-black">#42</p>
+                    <p class="text-[10px] text-rose-500 font-bold">In Kenya</p>
+                  </div>
+                  <div class="p-3 rounded-lg bg-muted/50 text-center">
+                    <p class="text-xs text-muted-foreground font-bold uppercase mb-1">Badges</p>
+                    <p class="text-xl font-black">15</p>
+                    <p class="text-[10px] text-rose-500 font-bold">Earned</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div class="p-6 rounded-2xl bg-gradient-to-br from-zinc-900 to-black text-white shadow-2xl relative overflow-hidden">
+              <div class="absolute top-0 right-0 p-2">
+                <Flame className="h-20 w-20 text-white opacity-10" />
+              </div>
+              <h3 class="text-xl font-bold mb-2">Upgrade to Premium</h3>
+              <p class="text-sm text-zinc-400 mb-6">Earn double Zenith Points and unlock exclusive rewards.</p>
+              <a href="/premium">
+                <Button className="w-full bg-white text-black hover:bg-zinc-200 font-bold">
+                  Go Premium
+                </Button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <Footer client:load />
+  </div>
+</Layout>

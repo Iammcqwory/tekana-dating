@@ -1,0 +1,16 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Navbar } from "../components/site/navbar";
+import { Footer } from "../components/site/footer";
+import { SettingsPage } from "../components/settings/settings-page";
+---
+
+<Layout title="Settings | Tekana" description="Manage your account settings and preferences.">
+  <div class="flex min-h-screen flex-col relative">
+    <Navbar client:load />
+    <main class="flex-1">
+      <SettingsPage client:load />
+    </main>
+    <Footer client:load />
+  </div>
+</Layout>

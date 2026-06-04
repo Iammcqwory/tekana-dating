@@ -1,0 +1,177 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Navbar } from "../components/site/navbar";
+import { Footer } from "../components/site/footer";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Check, Crown, Zap, Heart, MessageSquare, Globe, Sparkles } from "lucide-react";
+
+const PLANS = [
+    {
+        name: "Tekana Silver",
+        price: "Ksh 499",
+        period: "/month",
+        description: "Essential features for active daters.",
+        features: [
+            "10 likes per day",
+            "Basic messaging",
+            "See who viewed your profile",
+            "Standard support",
+        ],
+        color: "bg-slate-100 dark:bg-slate-800",
+        iconType: "zap",
+        premium: false,
+    },
+    {
+        name: "Tekana Gold",
+        price: "Ksh 999",
+        period: "/month",
+        description: "The most popular choice for meaningful connections.",
+        features: [
+            "Unlimited likes",
+            "See who liked you",
+            "Priority in Discover",
+            "5 virtual gifts per month",
+            "Global discovery mode",
+        ],
+        color: "bg-amber-50 dark:bg-amber-950/20",
+        iconType: "crown",
+        premium: true,
+        popular: true,
+    },
+    {
+        name: "Tekana Platinum",
+        price: "Ksh 2,499",
+        period: "/month",
+        description: "The ultimate dating experience with personalized support.",
+        features: [
+            "Everything in Gold",
+            "Personalized Wingman AI+",
+            "Monthly 1-on-1 coaching",
+            "Verified VIP badge",
+            "Incognito mode",
+        ],
+        color: "bg-rose-50 dark:bg-rose-950/20",
+        iconType: "sparkles",
+        premium: true,
+    },
+];
+---
+
+<Layout title="Premium Packages | Tekana" description="Upgrade to Tekana Premium for exclusive features.">
+  <div class="flex min-h-screen flex-col relative">
+    <Navbar client:load />
+    <main class="flex-1">
+      <div class="container mx-auto px-4 py-16">
+        <div class="mb-16 text-center space-y-4">
+          <Badge className="bg-amber-100 text-amber-600 hover:bg-amber-100 border-none px-4 py-1 text-xs font-bold uppercase tracking-widest">
+            Premium Experience
+          </Badge>
+          <h1 class="text-4xl md:text-5xl font-bold tracking-tight">
+            Upgrade to <span class="text-rose-500">Tekana Premium</span>
+          </h1>
+          <p class="mx-auto max-w-2xl text-xl text-muted-foreground">
+            Get exclusive features designed to help you find your perfect match faster and more authentically.
+          </p>
+        </div>
+
+        <div class="grid gap-8 lg:grid-cols-3">
+          {PLANS.map((plan) => (
+            <Card
+              className={`relative flex flex-col overflow-hidden transition-all hover:shadow-xl ${plan.popular ? "border-amber-400 border-2 scale-105 z-10" : "border-border/60"}`}
+            >
+              {plan.popular && (
+                <div class="absolute top-0 right-0 left-0 bg-amber-400 py-1 text-center text-xs font-bold uppercase tracking-wider text-white">
+                  Most Popular
+                </div>
+              )}
+              <CardHeader className={`${plan.color} pb-8 pt-10`}>
+                <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-background shadow-sm">
+                  {plan.iconType === "zap" && <Zap className="h-6 w-6 text-slate-500" />}
+                  {plan.iconType === "crown" && <Crown className="h-6 w-6 text-amber-500" />}
+                  {plan.iconType === "sparkles" && <Sparkles className="h-6 w-6 text-rose-500" />}
+                </div>
+                <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                <CardDescription>{plan.description}</CardDescription>
+                <div class="mt-4 flex items-baseline gap-1">
+                  <span class="text-4xl font-bold">{plan.price}</span>
+                  <span class="text-muted-foreground">{plan.period}</span>
+                </div>
+              </CardHeader>
+              <CardContent className="flex-1 p-8">
+                <ul class="space-y-4">
+                  {plan.features.map((feature) => (
+                    <li class="flex items-start gap-3 text-sm">
+                      <div class="rounded-full bg-green-100 p-0.5 dark:bg-green-900/30">
+                        <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+                      </div>
+                      <span class="text-muted-foreground">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter className="p-8 pt-0">
+                <Button
+                  className={`w-full text-lg h-12 ${plan.popular
+                    ? "bg-amber-500 hover:bg-amber-600 text-white"
+                    : "bg-rose-500 hover:bg-rose-600"}`}
+                >
+                  Choose {plan.name.split(" ")[1]}
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+
+        {/* Feature Highlights */}
+        <div class="mt-24 grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+          <div class="text-center space-y-3">
+            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-50 dark:bg-rose-950/20 text-rose-500">
+              <Heart className="h-8 w-8" />
+            </div>
+            <h3 class="font-bold">See Who Liked You</h3>
+            <p class="text-sm text-muted-foreground">No more guessing! See exactly who has already liked your profile.</p>
+          </div>
+          <div class="text-center space-y-3">
+            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-950/20 text-blue-500">
+              <Globe className="h-8 w-8" />
+            </div>
+            <h3 class="font-bold">Global Discovery</h3>
+            <p class="text-sm text-muted-foreground">Match with people across the continent or in specific cities of interest.</p>
+          </div>
+          <div class="text-center space-y-3">
+            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 dark:bg-amber-950/20 text-amber-500">
+              <Zap className="h-8 w-8" />
+            </div>
+            <h3 class="font-bold">Unlimited Rewinds</h3>
+            <p class="text-sm text-muted-foreground">Accidentally passed on someone? Rewind and get a second chance.</p>
+          </div>
+          <div class="text-center space-y-3">
+            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-green-50 dark:bg-green-950/20 text-green-500">
+              <MessageSquare className="h-8 w-8" />
+            </div>
+            <h3 class="font-bold">Priority Messaging</h3>
+            <p class="text-sm text-muted-foreground">Your messages stay at the top of your matches' inbox for better visibility.</p>
+          </div>
+        </div>
+
+        {/* FAQ - Brief */}
+        <div class="mt-24 rounded-2xl bg-muted/50 p-8 md:p-12">
+          <h2 class="text-2xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
+          <div class="grid gap-8 md:grid-cols-2">
+            <div>
+              <h4 class="font-bold mb-2">Can I cancel anytime?</h4>
+              <p class="text-sm text-muted-foreground">Yes, you can cancel your subscription at any time through your account settings. You'll keep your features until the end of your billing cycle.</p>
+            </div>
+            <div>
+              <h4 class="font-bold mb-2">What payment methods do you accept?</h4>
+              <p class="text-sm text-muted-foreground">We accept M-Pesa, Credit/Debit cards (Visa, Mastercard), and PayPal for all premium plans.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <Footer client:load />
+  </div>
+</Layout>

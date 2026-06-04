@@ -1,0 +1,16 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { Navbar } from "../../components/site/navbar";
+import { Footer } from "../../components/site/footer";
+import { EventsPage } from "../../components/events/events-page";
+---
+
+<Layout title="Events | Tekana" description="Browse and register for upcoming virtual and in-person dating events.">
+  <div class="flex min-h-screen flex-col relative">
+    <Navbar client:load />
+    <main class="flex-1">
+      <EventsPage client:load />
+    </main>
+    <Footer client:load />
+  </div>
+</Layout>
