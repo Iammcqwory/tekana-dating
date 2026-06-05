@@ -4,6 +4,8 @@ import { Navbar } from "../../components/site/navbar";
 import { Footer } from "../../components/site/footer";
 import { MessageDetailPage } from "../../components/messages/message-detail-page";
 
+export const prerender = true;
+
 export function getStaticPaths() {
   return [
     { params: { id: '1' } },

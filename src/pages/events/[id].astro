@@ -4,6 +4,8 @@ import { Navbar } from "../../components/site/navbar";
 import { Footer } from "../../components/site/footer";
 import { EventDetailsPage } from "../../components/events/event-details-page";
 
+export const prerender = true;
+
 export function getStaticPaths() {
   return [
     { params: { id: '1' } },

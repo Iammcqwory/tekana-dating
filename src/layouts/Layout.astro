@@ -3,6 +3,8 @@ import "../styles/globals.css";
 import { ThemeProvider } from "../components/providers/theme-provider";
 import { Toaster } from "sonner";
 
+import { ClientRouter } from "astro:transitions";
+
 interface Props {
   title?: string;
   description?: string;
@@ -20,6 +22,7 @@ const { title = "Tekana - Connect Authentically", description = "Tekana is a dat
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <ClientRouter />
   </head>
   <body class="min-h-screen bg-background font-sans antialiased">
     <ThemeProvider client:load>
