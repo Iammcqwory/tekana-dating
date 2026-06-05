@@ -1,66 +1,257 @@
-# 🎓 Qwory Teacher: The Tekana Migration Journey
+# 🎓 FORIammcqwory — Tekana Dating Platform
 
-Welcome to the **Tekana** breakdown! We took Tekana, a premium dating platform built with Next.js, and completely overhauled it by migrating it to **Astro 6** and **Tailwind CSS v4**. Not only did we change its underlying engine, but we also gave its user interface a beautiful, glassmorphic "Wow" factor.
+## 🏗️ What This Project Is
 
-Here is the plain-language story of how we rebuilt Tekana, why we made certain technical choices, the pitfalls we fell into (and climbed out of), and what we can learn from this adventure to become better engineers.
+Tekana is a **dating platform** built for African dating culture — think Tinder meets African traditions. It's a full web application with:
 
----
-
-## 🏗️ The Technical Architecture: How it All Fits Together
-
-At a high level, Tekana is a web application where users can discover potential partners, send messages, explore events, and connect authentically.
-
-**1. The Engine: Astro**
-We moved from Next.js to Astro. Why? Because Astro is inherently built for speed. It uses an architecture called **Island Architecture**. Think of an ocean (the static HTML of your webpage) with little interactive islands (React components) floating on it. Astro sends pure, fast HTML to the browser by default, and only loads JavaScript for the specific components that need to be interactive (like a complex matching form or a navigation menu). 
-* **Static vs. Dynamic:** Most of our pages (like the landing page, events, and community boards) are pre-rendered at build time (`export const prerender = true`), meaning they load instantly. Highly dynamic pages or specific "islands" (like the user dashboard) are rendered on the server or hydrated on the client (`client:load`).
-
-**2. The Look: Tailwind CSS v4 + Radix UI**
-For styling, we're using **Tailwind CSS v4**. It uses a new, sleek `@theme` approach instead of the old, clunky `tailwind.config.js`. We combined this with **Radix UI**—a library of unstyled, accessible UI components. We styled these raw components with Tailwind to create our sleek, premium design (glassmorphism, glowing borders, smooth animations).
-
-**3. The Host: Vercel**
-The whole application is continuously deployed to **Vercel** (`tekananow.vercel.app`). We hooked up Astro to Vercel using the `@astrojs/vercel` adapter, which allows our Astro app to run seamlessly on Vercel's Edge/Serverless infrastructure.
+- A **landing page** with hero, features, testimonials, and CTA sections
+- **Discover** page with swipe-style profile browsing
+- **Messages** and real-time chat interface
+- **Events** listing with community gatherings
+- **Community Hub** with interest groups and success stories
+- **Premium subscriptions** (Silver, Gold, Platinum) with M-Pesa payment
+- **Zenith Rewards** gamification system (daily streaks, achievements, XP)
+- **AI Wingman** chatbot for dating tips and cultural advice
+- **Onboarding** wizard and **Profile** editing
+- **Settings** with preference controls
 
 ---
 
-## 🎨 Why Did We Make These Decisions?
+## 🧱 Technical Architecture
 
-* **Speed & SEO:** Dating apps need to feel snappy and rank well. Astro's static-first approach means incredibly fast load times, which boosts SEO and user retention.
-* **Premium Aesthetics:** We intentionally aimed for a "wow" factor. We abandoned flat colors and simple borders in favor of deep gradient glows, blurred backgrounds (glassmorphism), and micro-animations. First impressions matter immensely in dating apps.
-* **View Transitions:** We integrated Astro's `<ClientRouter />` to provide "native app-like" transitions. Instead of a hard refresh when clicking a link, the page smoothly transitions to the next, maintaining the illusion of a single-page app (SPA) while reaping the benefits of a multi-page app (MPA).
+### The Stack
+
+| Layer | Technology | Why |
+|-------|-----------|-----|
+| **Framework** | Astro 6.x | Astro gives us *islands architecture* — most of the page is static HTML (fast!), and only interactive parts (navbar, chat, forms) hydrate as React components |
+| **UI Library** | React 19 | For interactive islands that need state management |
+| **Styling** | Tailwind CSS v4 | Utility-first CSS with the new v4 `@theme` directive |
+| **Components** | Radix UI + shadcn/ui pattern | Headless, accessible component primitives |
+| **Deployment** | Vercel via `@astrojs/vercel` | Server-side rendering with edge functions |
+| **Theme** | next-themes | Dark/light mode switching |
+
+### How The Pieces Connect
+
+Think of Tekana like a sandwich:
+
+```
+┌──────────────────────────────────┐
+│       Layout.astro               │  ← The bread: wraps EVERY page
+│  ┌────────────────────────────┐  │
+│  │  globals.css + fonts       │  │  ← The sauce: design tokens, colors
+│  │  ThemeProvider (React)     │  │  ← Dark/light mode context
+│  │  ┌──────────────────────┐  │  │
+│  │  │  Page Content         │  │  │  ← The filling: each .astro page
+│  │  │  (Navbar, sections,  │  │  │
+│  │  │   Footer, AI Wingman) │  │  │
+│  │  └──────────────────────┘  │  │
+│  └────────────────────────────┘  │
+└──────────────────────────────────┘
+```
+
+**Astro pages** (`.astro` files) are like templates. They import React components and tell Astro *when* to make them interactive using `client:load`. Without that directive, React code renders to static HTML — no JavaScript shipped to the browser. This is why Astro is fast.
+
+**The `@` alias** (`@/components/ui/button`) maps to `/src/` via `astro.config.mjs`'s Vite resolve alias. This keeps imports clean.
 
 ---
 
-## 🐛 The Bugs We Squashed & Pitfalls to Avoid
+## 🎨 The CSS Color System (The Big Bug & Fix)
 
-No great project is built without stepping on a few rakes. Here’s what went wrong and how we fixed it:
+### The Bug 🐛
 
-### 1. The Vercel Adapter Version Mismatch
-**The Trap:** During the build, Vercel threw a nasty error: `Missing "./app/entrypoint" specifier`.
-**The Fix:** This happened because our core `astro` package and the `@astrojs/vercel` adapter were out of sync. Astro is a rapidly moving ecosystem. We fixed it by bumping both dependencies to their latest, compatible versions.
-**The Lesson:** Keep framework and adapter versions locked in tandem. When upgrading a core framework, always check if its official integrations/adapters need an update too.
+This was the single biggest issue. The site looked completely **unstyled** — no colors, no dark mode, everything was broken. Here's what happened:
 
-### 2. The Great CSS Rendering Leak
-**The Trap:** The user noticed "the css is off." When inspecting the live site, we realized the CSS file was literally serving a Javascript function: `function render({slots: ___SLOTS___}){return \`...CSS...\`}`. The browser couldn't understand it, so it threw out all our styles!
-**The Fix:** This was another insidious SSR rendering bug caused by a mismatch in how Vite (Astro's bundler) handled the new `@tailwindcss/vite` plugin alongside the Vercel adapter. We fixed it by:
-1. Upgrading Tailwind from a beta version (`4.0.0-beta.8`) to the stable `latest` release.
-2. Reinstalling `astro` and `@astrojs/vercel` to align with the new Vite bundler behavior.
+**The old `globals.css` was doing this:**
 
-### 3. The `tailwindcss-animate` Conflict
-**The Trap:** Our `npm install` started failing. The popular `tailwindcss-animate` package (often used with Radix/Shadcn) strictly demands Tailwind v3. We were using Tailwind v4, causing a peer dependency crash.
-**The Fix:** We completely uninstalled `tailwindcss-animate`. To keep our beautiful dialog and dropdown animations, we manually wrote the `@keyframes` and utility classes directly into `globals.css`.
-**The Lesson:** Bleeding-edge tech (Tailwind v4) often breaks ecosystem plugins. Be prepared to roll your own solutions or extract the underlying CSS when third-party libraries haven't caught up to the latest major versions.
+```css
+/* In @theme block (Tailwind v4 build-time) */
+@theme {
+  --color-background: hsl(var(--background));  /* ← THIS IS THE PROBLEM */
+}
 
-### 4. The Self-Referencing CSS Variable Loop
-**The Trap:** Our cards weren't picking up their text color. In `globals.css`, we accidentally had `--color-card-foreground: hsl(var(--color-card-foreground))`. It was pointing at itself!
-**The Fix:** We corrected it to point to the raw numeric HSL variable: `--color-card-foreground: hsl(var(--card-foreground))`.
-**The Lesson:** CSS variables are powerful but require strict naming conventions. Differentiate clearly between the *value* token (`--card`) and the *computed color* token (`--color-card`).
+/* In :root (runtime CSS) */
+:root {
+  --background: 0 0% 100%;  /* ← Space-separated, no hsl() wrapper */
+}
+```
+
+The `@theme` block says: "Hey Tailwind, `bg-background` should be `hsl(var(--background))`."
+
+At runtime, `var(--background)` resolves to `0 0% 100%`.
+
+So the browser sees: `hsl(0 0% 100%)`.
+
+**This looks like it should work**, but the problem is **double indirection during Tailwind's build step**. Tailwind v4's `@theme` processes at build time and needs to resolve colors to generate utility classes. When it encounters `hsl(var(--background))`, it can't fully resolve the color at build time because `var(--background)` is a runtime CSS variable. This leads to **broken opacity modifiers** (`bg-background/50` doesn't work) and **broken color mixing**.
+
+### The Fix ✅
+
+We changed the approach: instead of wrapping `var()` in `hsl()` inside `@theme`, we define the theme colors as **direct `var()` references** and put the full `hsl()` values directly in the CSS custom properties:
+
+```css
+@theme {
+  --color-background: var(--background);  /* ← Direct reference */
+}
+
+:root {
+  --background: hsl(0, 0%, 100%);  /* ← Full hsl() value */
+}
+
+.dark {
+  --background: hsl(222.2, 84%, 4.9%);  /* ← Full hsl() value */
+}
+```
+
+Now Tailwind knows `--color-background` is a CSS variable (deferred), and the variable itself contains a complete, valid color. **No double indirection, no broken opacity.**
+
+### The Lesson 📝
+
+> **When using Tailwind v4's `@theme`, colors need to either be fully resolved at build time (literal values) or use `var()` referencing CSS custom properties that contain *complete* color values (not partial HSL components).**
+>
+> The pattern `hsl(var(--some-hsl-values))` where `--some-hsl-values: 222 84% 5%` is a **Tailwind v3 pattern** that doesn't work in v4's `@theme`.
 
 ---
 
-## 🧠 How Good Engineers Think: Takeaways for Makori
+## ⚡ FOUC (Flash of Unstyled Content) Prevention
 
-1. **Investigate the Output, Not Just the Code:** When the CSS was broken, I didn't just stare at the `.css` source files. I downloaded the compiled CSS file directly from the live Vercel URL. That's how I discovered the Javascript wrapper bug. *Always look at what the browser is actually receiving.*
-2. **Be Ruthless with Dependencies:** When `tailwindcss-animate` blocked our Tailwind v4 upgrade, I didn't waste time trying to hack `npm config` or force resolutions. I realized it only provided a few `@keyframes`, uninstalled it, and wrote the CSS by hand. Don't let a tiny utility library hold your architecture hostage.
-3. **Aesthetics are Engineering:** Writing code that "works" is only half the battle. If a modern B2C app doesn't feel premium, users won't trust it. Taking the time to add micro-animations, glassmorphism, and high-quality hero assets is just as important as writing clean React components.
+### The Bug 🐛
 
-You now have a blazing fast, beautifully designed, and safely deployed Astro application. Go forth and connect the world! 🚀
+When you loaded the page, there was a brief flash of light theme before dark mode kicked in. This is because:
+
+1. The HTML is SSR'd with `class="dark"` on `<html>`
+2. But `next-themes` was configured with `defaultTheme="system"`
+3. On the client, `next-themes` checks `localStorage`, finds nothing (first visit), checks system preference, and if it's light → removes `dark` → then adds it back if the user previously selected dark
+
+This causes a **visible flash** where the page goes light → dark.
+
+### The Fix ✅
+
+Two-part fix:
+
+1. **Inline `<script>` in the `<head>`** that runs *before* any rendering:
+```html
+<script is:inline>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.add('dark');
+    }
+  })();
+</script>
+```
+
+2. **Set `defaultTheme="dark"` and `enableSystem={false}`** in the ThemeProvider. This means:
+   - First visit → dark mode (no flash)
+   - Returning visit → reads from localStorage
+
+### The Lesson 📝
+
+> **Always add an inline script *before* your framework boots to apply the correct theme class.** Frameworks like React hydrate *after* the page paints, so any theme logic in React will always cause a flash. The inline script runs synchronously before paint, preventing FOUC.
+
+---
+
+## 🏗️ Codebase Structure
+
+```
+src/
+├── components/
+│   ├── ai/              # AI Wingman chatbot
+│   ├── auth/            # Login/Register forms
+│   ├── discover/        # Swipe-style discovery page
+│   ├── events/          # Events listing & detail pages
+│   ├── messages/        # Chat interface
+│   ├── onboarding/      # Multi-step onboarding wizard
+│   ├── profile/         # Profile viewing & editing
+│   ├── providers/       # React context providers (ThemeProvider)
+│   ├── settings/        # App settings page
+│   ├── site/            # Navbar & Footer (layout-level)
+│   └── ui/              # Reusable UI primitives (Button, Card, etc.)
+├── layouts/
+│   └── Layout.astro     # Master layout template
+├── lib/
+│   └── utils.ts         # cn() utility for class merging
+├── pages/               # File-based routing (Astro)
+│   ├── auth/            # /auth/login, /auth/register
+│   ├── events/          # /events, /events/[id]
+│   ├── messages/        # /messages, /messages/[id]
+│   ├── index.astro      # Landing page (/)
+│   ├── community.astro  # /community
+│   ├── premium.astro    # /premium
+│   ├── rewards.astro    # /rewards
+│   └── ...
+└── styles/
+    └── globals.css      # Design tokens, theme colors, animations
+```
+
+### Key Design Decisions
+
+1. **Astro + React (not Next.js)**: We chose Astro because most pages are content-heavy. Only interactive parts (forms, chat, navbar state) need React. This means *way less JavaScript* shipped to the browser than a full Next.js app.
+
+2. **`client:load` directive**: This tells Astro to hydrate the React component immediately on page load. We use this for the Navbar (needs interactivity immediately) and the AI Wingman. For less critical components, `client:visible` or `client:idle` would be better for performance.
+
+3. **shadcn/ui pattern (not library)**: We don't install shadcn as a package — we copy the component code into `src/components/ui/`. This gives us full control to customize. The `cn()` utility from `src/lib/utils.ts` merges Tailwind classes intelligently using `clsx` + `tailwind-merge`.
+
+4. **Vercel adapter with `output: 'server'`**: This enables SSR for all pages (not just static generation). This is needed because we have dynamic routes like `/events/[id]` and `/messages/[id]`.
+
+---
+
+## 🧠 How Good Engineers Think
+
+### 1. Debug Systematically, Not Randomly
+
+When the CSS was broken, I could have randomly changed things. Instead:
+- ✅ Ran `npm run build` to check for compilation errors
+- ✅ Inspected the build output CSS to see what Tailwind actually generated
+- ✅ Traced the color variable chain: `bg-background` → `--color-background` → `hsl(var(--background))` → found the break
+- ✅ Tested the fix with a clean build
+
+**Lesson**: Always trace the *chain of data*. Find where the value enters the system, where it transforms, and where it breaks.
+
+### 2. Don't Fight The Framework
+
+The old code used a Tailwind v3 pattern (`hsl(var(--x))` with raw HSL components) in a Tailwind v4 project. v4 changed how `@theme` works. Instead of hacking around it, we adopted v4's intended pattern.
+
+**Lesson**: When a framework upgrades, read the migration guide. Fighting a framework is like swimming upstream — exhausting and you end up where you started.
+
+### 3. Defense In Depth
+
+The FOUC fix uses *two* mechanisms:
+- Inline `<script>` (immediate, no dependencies)
+- `ThemeProvider` config (correct defaults for React lifecycle)
+
+If one fails, the other catches it. This is *defense in depth*.
+
+### 4. Performance Is A Feature
+
+- `loading="eager"` on the hero image (above the fold, critical)
+- `loading="lazy"` would be appropriate for below-the-fold images
+- `preconnect` hints for Google Fonts
+- `backdrop-blur` only where it adds visual value (it's GPU-intensive)
+
+---
+
+## 🪤 Potential Pitfalls
+
+| Pitfall | How To Avoid |
+|---------|-------------|
+| Tailwind v4 `@theme` with `hsl(var())` | Always use direct values or plain `var()` references. Never nest CSS functions around `var()` in `@theme`. |
+| FOUC with theme switching | Always add an inline script in `<head>` before framework hydration |
+| `next-themes` with SSR | Disable `enableSystem` and set an explicit `defaultTheme` that matches the server-rendered HTML |
+| Unused imports in Vite | Vite warns about them — clean up to reduce bundle size |
+| `client:load` everywhere | Use `client:visible` for below-fold components, `client:idle` for non-critical ones |
+| Radix UI in Astro | Radix components need `client:load` since they rely on React context |
+
+---
+
+## 🔥 What I Learned From This Build
+
+1. **Tailwind CSS v4 is a paradigm shift** — `@theme` replaces `tailwind.config.js`. The configuration is now CSS-native, not JavaScript.
+
+2. **Astro's island architecture is genuinely smart** — ship zero JS by default, opt into interactivity per-component. Perfect for content-heavy sites.
+
+3. **CSS custom properties are powerful but tricky** — they're runtime-resolved, which means build-time tools like Tailwind can't fully predict their values. Always test that your color system works in both light and dark modes.
+
+4. **The "it works on my machine" bug** is often a build vs. dev divergence. Always test with `npm run build` + `npm run preview`, not just `npm run dev`.
+
+5. **Small details make premium feel** — glass morphism on the navbar, stagger animations on stats, social proof avatars, gradient text, glow effects. These take 20% more time but make 80% of the visual impact.
